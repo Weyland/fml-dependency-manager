@@ -1,0 +1,14 @@
+{
+  "name": "fml-dependency-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": [
+    "Weyland <weyland404@p0mp.com>",
+    "wvbe <wybe@p0mp.com"
+  ],
+  "license": "MIT"
+}
