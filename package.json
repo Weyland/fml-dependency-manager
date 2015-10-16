@@ -10,5 +10,9 @@
     "Weyland <weyland404@p0mp.com>",
     "wvbe <wybe@p0mp.com"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3"
+  }
 }

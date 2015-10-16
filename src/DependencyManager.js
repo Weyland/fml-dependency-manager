@@ -20,7 +20,7 @@ class DependencyManager {
 	/**
 	 * Create a new dependency node.
 	 * @param  {Node} node The node to add to the pool
-	 * @return {Node}
+	 * @return {Object}
 	 */
 	createNode(node) {
 		this._pool.push(node);
@@ -42,8 +42,8 @@ class DependencyManager {
 	 * @return {Object}
 	 */
 	getChain(name) {
-		return orderTasksByDependencies(
-			getUnorderedDependenciesForTask(this, name)
+		return orderNodesByDependencies(
+			getUnorderedDependenciesForNode(this, name)
 		);
 	}
 }
@@ -56,28 +56,25 @@ module.exports = DependencyManager;
  * @param  {String}            name              The name of the node
  * @return {Object}
  */
-function getUnorderedDependenciesForTask(dependencyManager, name) {
-	var results = {},
-		unresolvedTasks = [dependencyManager.getNodeByName(name)];
+function getUnorderedDependenciesForNode(dependencyManager, name) {
+	var unresolvedDependencies = [dependencyManager.getNodeByName(name)];
+	unresolvedDependencies.forEach(function heapAllDependencies(dependency) {
+		var dependencies = dependency.dependencies
+			.map(name => dependencyManager.getNodeByName(name))
+			.filter(dependency => unresolvedDependencies.indexOf(dependency) === -1);
 
-	unresolvedTasks.forEach(function heapAllDependencies(dependency) {
-		var dependencies = dependency
-			.dependencies
-			.map(depName => dependencyManager.getNodeByName(depName))
-			.filter(dep => unresolvedTasks.indexOf(dep) === -1);
-
-		unresolvedTasks = unresolvedTasks.concat(dependencies);
+		unresolvedDependencies = unresolvedDependencies.concat(dependencies);
 		dependencies.forEach(heapAllDependencies);
 	});
-	return unresolvedTasks;
+	return unresolvedDependencies;
 }
 
 /**
  * Order the tasks by dependencies.
- * @param  {Array}  unresolvedDependencies Contains an array of unresolved dependencies
+ * @param  {Object}  unresolvedDependencies Contains an array of unresolved dependencies
  * @return {Object}
  */
-function orderTasksByDependencies(unresolvedDependencies) {
+function orderNodesByDependencies(unresolvedDependencies) {
 	var resolvedTasks = [];
 	while (unresolvedDependencies.length) {
 		var newlyResolvedTasks = unresolvedDependencies
